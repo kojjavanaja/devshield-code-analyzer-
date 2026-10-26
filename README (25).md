@@ -1,0 +1,1 @@
+Reusable visual building blocks currently live alongside route page composition in `App.tsx`. Extract into this folder as the application grows. All UI colors are defined in `styles.css` using the Midnight Plum & Copper palette.

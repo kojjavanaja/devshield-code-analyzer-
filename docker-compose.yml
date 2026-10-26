@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: devshield
+      POSTGRES_USER: devshield
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me-local-only}
+    volumes: [devshield_db:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U devshield -d devshield"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  api:
+    build: ./server
+    environment:
+      DATABASE_URL: postgresql+psycopg://devshield:${POSTGRES_PASSWORD:-change-me-local-only}@db:5432/devshield
+      SECRET_KEY: ${SECRET_KEY:-local-only-change-this-secret-before-use}
+      CORS_ORIGINS: http://localhost:5173
+      UPLOAD_DIR: /app/storage
+    volumes: [devshield_storage:/app/storage]
+    depends_on:
+      db: {condition: service_healthy}
+    ports: ["8000:8000"]
+  web:
+    build: ./client
+    environment:
+      VITE_API_URL: http://localhost:8000
+    depends_on: [api]
+    ports: ["5173:80"]
+volumes:
+  devshield_db:
+  devshield_storage:

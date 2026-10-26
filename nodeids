@@ -1,0 +1,5 @@
+[
+  "tests/test_analyzer.py::test_detects_eval_and_secret",
+  "tests/test_analyzer.py::test_risk_score_is_bounded",
+  "tests/test_analyzer.py::test_syntax_error_is_reported"
+]
